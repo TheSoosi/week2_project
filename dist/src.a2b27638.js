@@ -130,12 +130,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-var User = /*#__PURE__*/_createClass(function User(username, email, address, admin) {
+var User = /*#__PURE__*/_createClass(function User(username, email, address, admin, imageSrc) {
   _classCallCheck(this, User);
   this.username = username;
   this.email = email;
   this.address = address;
   this.admin = admin;
+  this.imageSrc = imageSrc;
 });
 exports.default = User;
 },{}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
@@ -204,13 +205,13 @@ function getForm() {
     username: document.getElementById("input-username"),
     email: document.getElementById("input-email"),
     address: document.getElementById("input-address"),
-    admin: document.getElementById("input-admin")
+    admin: document.getElementById("input-admin"),
+    image: document.getElementById("selected-image")
   };
 }
 function getData() {
   var form = getForm();
-  var user = new _user.default(form.username.value, form.email.value, form.address.value, form.admin.checked);
-  console.log(user);
+  var user = new _user.default(form.username.value, form.email.value, form.address.value, form.admin.checked, form.image.src);
   return user;
 }
 function clearData() {
@@ -219,8 +220,18 @@ function clearData() {
   form.email.value = "";
   form.address.value = "";
   form.admin.checked = false;
+  form.image.removeAttribute("src");
+  inputFile.value = null;
 }
-function getTableRow() {
+function getTableRow(user) {
+  var rows = document.querySelectorAll("#table-body tr");
+  for (var i = 0; i < rows.length; i++) {
+    var column = rows[i].querySelector("td");
+    var text = column.innerText;
+    if (text === user.username) {
+      return rows[i];
+    }
+  }
   return document.createElement("tr");
 }
 function createCell(text) {
@@ -234,10 +245,18 @@ function addCells(row, user) {
   row.appendChild(createCell(user.address));
   var adminText = user.admin ? "X" : "-";
   row.appendChild(createCell(adminText));
-  row.appendChild(createCell(""));
+  var image = document.createElement("img");
+  image.width = "64";
+  image.height = "64";
+  if (user.imageSrc) {
+    image.src = user.imageSrc;
+  }
+  var imageCell = createCell("");
+  imageCell.appendChild(image);
+  row.appendChild(imageCell);
 }
 function upsertUser(user) {
-  var row = getTableRow();
+  var row = getTableRow(user);
   row.innerHTML = "";
   addCells(row, user);
   var tb = document.getElementById("table-body");
@@ -254,6 +273,17 @@ var clearTableButton = document.getElementById("empty-table");
 clearTableButton.onclick = function (event) {
   var tb = document.getElementById("table-body");
   tb.innerHTML = "";
+};
+var image = document.getElementById("selected-image");
+var inputFile = document.getElementById("input-image");
+inputFile.onchange = function () {
+  if (inputFile.files && inputFile.files[0]) {
+    var fileReader = new FileReader();
+    fileReader.readAsDataURL(inputFile.files[0]);
+    fileReader.onloadend = function (e) {
+      image.src = e.target.result;
+    };
+  }
 };
 },{"./user.js":"src/user.js","./style.css":"src/style.css"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];

@@ -7,6 +7,7 @@ function getForm() {
     email: document.getElementById("input-email"),
     address: document.getElementById("input-address"),
     admin: document.getElementById("input-admin"),
+    image: document.getElementById("selected-image"),
   };
 }
 
@@ -16,9 +17,10 @@ function getData() {
     form.username.value,
     form.email.value,
     form.address.value,
-    form.admin.checked
+    form.admin.checked,
+    form.image.src
   );
-  console.log(user);
+
   return user;
 }
 
@@ -28,9 +30,19 @@ function clearData() {
   form.email.value = "";
   form.address.value = "";
   form.admin.checked = false;
+  form.image.removeAttribute("src");
+  inputFile.value = null;
 }
 
-function getTableRow() {
+function getTableRow(user) {
+  const rows = document.querySelectorAll("#table-body tr");
+  for (let i = 0; i < rows.length; i++) {
+    const column = rows[i].querySelector("td");
+    const text = column.innerText;
+    if (text === user.username) {
+      return rows[i];
+    }
+  }
   return document.createElement("tr");
 }
 function createCell(text) {
@@ -45,11 +57,21 @@ function addCells(row, user) {
   row.appendChild(createCell(user.address));
   const adminText = user.admin ? "X" : "-";
   row.appendChild(createCell(adminText));
-  row.appendChild(createCell(""));
+
+  const image = document.createElement("img");
+  image.width = "64";
+  image.height = "64";
+  if (user.imageSrc) {
+    image.src = user.imageSrc;
+  }
+
+  const imageCell = createCell("");
+  imageCell.appendChild(image);
+  row.appendChild(imageCell);
 }
 
 function upsertUser(user) {
-  const row = getTableRow();
+  const row = getTableRow(user);
   row.innerHTML = "";
   addCells(row, user);
   const tb = document.getElementById("table-body");
@@ -68,4 +90,15 @@ const clearTableButton = document.getElementById("empty-table");
 clearTableButton.onclick = (event) => {
   const tb = document.getElementById("table-body");
   tb.innerHTML = "";
+};
+const image = document.getElementById("selected-image");
+const inputFile = document.getElementById("input-image");
+inputFile.onchange = () => {
+  if (inputFile.files && inputFile.files[0]) {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(inputFile.files[0]);
+    fileReader.onloadend = (e) => {
+      image.src = e.target.result;
+    };
+  }
 };
