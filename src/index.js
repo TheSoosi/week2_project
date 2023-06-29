@@ -1,6 +1,17 @@
 import User from "./user.js";
 import "./style.css";
 
+function createHeaderRow() {
+  const tr = document.createElement("tr");
+  tr.appendChild(createCell("Username", true));
+  tr.appendChild(createCell("Email", true));
+  tr.appendChild(createCell("Address", true));
+  tr.appendChild(createCell("Admin", true));
+  tr.appendChild(createCell("Image", true));
+
+  return tr;
+}
+
 function getForm() {
   return {
     username: document.getElementById("input-username"),
@@ -36,7 +47,7 @@ function clearData() {
 
 function getTableRow(user) {
   const rows = document.querySelectorAll("#table-body tr");
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 1; i < rows.length; i++) {
     const column = rows[i].querySelector("td");
     const text = column.innerText;
     if (text === user.username) {
@@ -45,8 +56,10 @@ function getTableRow(user) {
   }
   return document.createElement("tr");
 }
-function createCell(text) {
-  const cell = document.createElement("td");
+function createCell(text, isHeader = false) {
+  const cell = isHeader
+    ? document.createElement("th")
+    : document.createElement("td");
   cell.innerText = text;
   return cell;
 }
@@ -74,9 +87,11 @@ function upsertUser(user) {
   const row = getTableRow(user);
   row.innerHTML = "";
   addCells(row, user);
-  const tb = document.getElementById("table-body");
-  tb.appendChild(row);
+  table.appendChild(row);
 }
+
+const table = document.getElementById("table-body");
+table.appendChild(createHeaderRow());
 
 const submitButton = document.getElementById("submit-data");
 submitButton.onclick = (event) => {
@@ -88,8 +103,8 @@ submitButton.onclick = (event) => {
 
 const clearTableButton = document.getElementById("empty-table");
 clearTableButton.onclick = (event) => {
-  const tb = document.getElementById("table-body");
-  tb.innerHTML = "";
+  table.innerHTML = "";
+  table.appendChild(createHeaderRow());
 };
 const image = document.getElementById("selected-image");
 const inputFile = document.getElementById("input-image");

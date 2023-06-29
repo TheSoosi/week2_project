@@ -200,6 +200,15 @@ module.hot.accept(reloadCSS);
 var _user = _interopRequireDefault(require("./user.js"));
 require("./style.css");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function createHeaderRow() {
+  var tr = document.createElement("tr");
+  tr.appendChild(createCell("Username", true));
+  tr.appendChild(createCell("Email", true));
+  tr.appendChild(createCell("Address", true));
+  tr.appendChild(createCell("Admin", true));
+  tr.appendChild(createCell("Image", true));
+  return tr;
+}
 function getForm() {
   return {
     username: document.getElementById("input-username"),
@@ -225,7 +234,7 @@ function clearData() {
 }
 function getTableRow(user) {
   var rows = document.querySelectorAll("#table-body tr");
-  for (var i = 0; i < rows.length; i++) {
+  for (var i = 1; i < rows.length; i++) {
     var column = rows[i].querySelector("td");
     var text = column.innerText;
     if (text === user.username) {
@@ -235,7 +244,8 @@ function getTableRow(user) {
   return document.createElement("tr");
 }
 function createCell(text) {
-  var cell = document.createElement("td");
+  var isHeader = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var cell = isHeader ? document.createElement("th") : document.createElement("td");
   cell.innerText = text;
   return cell;
 }
@@ -259,9 +269,10 @@ function upsertUser(user) {
   var row = getTableRow(user);
   row.innerHTML = "";
   addCells(row, user);
-  var tb = document.getElementById("table-body");
-  tb.appendChild(row);
+  table.appendChild(row);
 }
+var table = document.getElementById("table-body");
+table.appendChild(createHeaderRow());
 var submitButton = document.getElementById("submit-data");
 submitButton.onclick = function (event) {
   var user = getData();
@@ -271,8 +282,8 @@ submitButton.onclick = function (event) {
 };
 var clearTableButton = document.getElementById("empty-table");
 clearTableButton.onclick = function (event) {
-  var tb = document.getElementById("table-body");
-  tb.innerHTML = "";
+  table.innerHTML = "";
+  table.appendChild(createHeaderRow());
 };
 var image = document.getElementById("selected-image");
 var inputFile = document.getElementById("input-image");
