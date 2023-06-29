@@ -262,6 +262,9 @@ function upsertUser(user) {
   var tb = document.getElementById("table-body");
   tb.appendChild(row);
 }
+upsertUser(new _user.default("qwer", "asdf@asdf", "zxcv", true, null));
+upsertUser(new _user.default("rewq", "fdsas@fdsa", "vczxz", false, null));
+upsertUser(new _user.default("uiop", "aslkhjdf@hjkl", "tnhgh", false, null));
 var submitButton = document.getElementById("submit-data");
 submitButton.onclick = function (event) {
   var user = getData();
@@ -310,7 +313,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "37141" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "36077" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

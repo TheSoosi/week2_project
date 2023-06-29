@@ -78,6 +78,10 @@ function upsertUser(user) {
   tb.appendChild(row);
 }
 
+upsertUser(new User("qwer", "asdf@asdf", "zxcv", true, null));
+upsertUser(new User("rewq", "fdsas@fdsa", "vczxz", false, null));
+upsertUser(new User("uiop", "aslkhjdf@hjkl", "tnhgh", false, null));
+
 const submitButton = document.getElementById("submit-data");
 submitButton.onclick = (event) => {
   const user = getData();
